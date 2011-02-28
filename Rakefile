@@ -38,9 +38,7 @@ SPEC =
     s.add_dependency("mocha", ">= 0.9.5")
     s.add_dependency("mime-types", ">= 1.16")
     #FIXME versions
-    s.add_dependency("rdf")
-    s.add_dependency("rdf/json")
-    s.add_dependency("rdf/raptor")
+    s.add_dependency("linkeddata")
   end
       
 Rake::GemPackageTask.new(SPEC) do |pkg|
