@@ -1,8 +1,10 @@
 require 'rubygems'
 require 'httpclient'
 require 'json'
-require 'rdf'
-require 'rdf/json'
-require 'rdf/raptor'
+require 'linkeddata'
 
+require 'kasabi/api/lookup'
 require 'kasabi/api/sparql'
+require 'kasabi/api/search'
+require 'kasabi/api/facet'
+require 'kasabi/api/augment'
