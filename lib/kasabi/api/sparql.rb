@@ -92,12 +92,8 @@ module Kasabi
     }      
     
     #A simple SPARQL client that handles the basic HTTP traffic
-    class Client
+    class Client < BaseClient
       
-        #URI of the endpoint
-        attr_reader :endpoint
-        #HTTPClient object
-        attr_reader :client
         attr_reader :graphs
         attr_reader :named_graphs      
         
@@ -106,11 +102,9 @@ module Kasabi
         #endpoint:: uri of the SPARQL endpoint
         #options:: hash containing additional configuration options, including +:apikey+ for specifying api key
         def initialize(endpoint, options={} )
-         @endpoint = endpoint
+         super(endpoint, options)
          @graphs = options[:graphs] || nil
          @named_graphs = options[:named_graphs] || nil
-         @client = options[:client] || HTTPClient.new()
-         @apikey = options[:apikey] || nil           
         end 
         
         #Add a default graph. This will be added as a default graph in the request protocol

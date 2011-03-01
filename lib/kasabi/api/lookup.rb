@@ -2,16 +2,15 @@ module Kasabi
   
   module Lookup
     
-    class Client
+    class Client < BaseClient
+      
       #Initialize the client to work with a specific endpoint
       #
       # The _options_ hash can contain the following values:
       # * *:apikey*: required. apikey authorized to use the API
       # * *:client*: HTTPClient object instance
       def initialize(endpoint, options={})
-        @endpoint = endpoint        
-        @client = options[:client] || HTTPClient.new()
-        @apikey = options[:apikey] || nil                    
+        super(endpoint, options)
       end
       
       def lookup(uri)        

@@ -3,20 +3,15 @@ module Kasabi
   module Search
     
     # Client object for working with a Kasabi Search API
-    class Client
-      
-      attr_reader :endpoint
-      attr_reader :client
-      
+    class Client < BaseClient
+            
       #Initialize the client to work with a specific endpoint
       #
       # The _options_ hash can contain the following values:
       # * *:apikey*: required. apikey authorized to use the API
       # * *:client*: HTTPClient object instance
       def initialize(endpoint, options={})
-        @endpoint = endpoint        
-        @client = options[:client] || HTTPClient.new()
-        @apikey = options[:apikey] || nil                    
+        super(endpoint, options)
       end
       
       # Search the Metabox indexes.
