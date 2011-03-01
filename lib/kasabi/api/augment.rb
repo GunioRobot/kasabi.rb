@@ -19,9 +19,7 @@ module Kasabi
       # uri:: the URL for the RSS 1.0 feed
       def augment_uri(uri)
         response = @client.get(@endpoint, {:apikey=>@apikey, "data-uri" => uri})
-        if response.status != 200
-          raise "Unable perform augmentation. Response code was #{resp.status}"
-        end
+        validate_response(response)
           
         return response.content
       end
@@ -33,9 +31,7 @@ module Kasabi
       # data:: a String containing the data to augment
       def augment(data, content_type="application/rss+xml")
         response = @client.post("#{@endpoint}?apikey=#{@apikey}", data, {"Content-Type" => "application/rss+xml"})
-        if response.status != 200
-          raise "Unable perform augmentation. Response code was #{resp.status}"
-        end          
+        validate_response(response)
         return response.content
       end
       

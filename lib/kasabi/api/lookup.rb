@@ -15,11 +15,7 @@ module Kasabi
       
       def lookup(uri)        
         response = @client.get(@endpoint, {:about => uri, :apikey=>@apikey, :output=>"json"} )
-        
-        if response.status != 200
-          raise "Unable to perform search. Response code was #{resp.status}"
-        end
-  
+        validate_response(response)  
         return JSON.parse( response.content )     
       end
       

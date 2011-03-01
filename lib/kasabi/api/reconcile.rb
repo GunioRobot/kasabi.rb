@@ -26,9 +26,7 @@ module Kasabi
       #each result and its index.
       def reconcile(query, &block)
         response = @client.get( @endpoint, {"query" => query.to_json, :apikey=>@apikey } )
-        if response.status != 200
-          raise "Unable to perform request. Status: #{response.status}. Message: #{response.content}"
-        end
+        validate_response(response)
         results = JSON.parse( response.content )
         if results["result"] && block_given?
           results["result"].each_with_index do |r, i|
@@ -51,9 +49,7 @@ module Kasabi
           json["q#{i}"] = query
         end
         response = @client.get( @endpoint, {"queries" => json.to_json, :apikey=>@apikey } )
-        if response.status != 200
-          raise "Unable to perform request. Status: #{response.status}. Message: #{response.content}"
-        end
+        validate_response(response)
         results = JSON.parse( response.content )
         if block_given?
           queries.each_with_index do |query, i|

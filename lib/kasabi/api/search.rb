@@ -28,9 +28,7 @@ module Kasabi
         search_params[:output] = "json"
         response = @client.get(search_url(), search_params)
         
-        if response.status != 200
-          raise "Unable to perform search. Response code was #{resp.status}"
-        end
+        validate_response(response)
         
         #TODO provide a better structure?
         return JSON.parse( response.content )
@@ -60,9 +58,7 @@ module Kasabi
         search_params[:fields] = facets.join(",")
         response = @client.get(facet_url(), search_params)
         
-        if response.status != 200
-          raise "Unable to do facetted search. Response code was #{resp.status}"
-        end
+        validate_response(response)
         
         return Kasabi::Search::Facet::Results.parse( response.content )  
       end

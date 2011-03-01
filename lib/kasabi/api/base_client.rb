@@ -18,6 +18,11 @@ module Kasabi
       @apikey = options[:apikey] || nil                    
     end
     
+    def validate_response(response)
+      if response.status != 200
+        raise "Unable to perform request. Status: #{response.status}. Message: #{response.content}"
+      end      
+    end
   end
   
 end
