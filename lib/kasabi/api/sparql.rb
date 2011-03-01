@@ -92,7 +92,7 @@ module Kasabi
     }      
     
     #A simple SPARQL client that handles the basic HTTP traffic
-    class SparqlClient
+    class Client
       
         #URI of the endpoint
         attr_reader :endpoint
@@ -312,7 +312,7 @@ module Kasabi
         #An error will be raised if the response is HTTP OK.
         #
         #query:: the SPARQL SELECT query
-        #sparql_client:: a configured SparqlClient object
+        #sparql_client:: a configured Sparql Client object
         def SparqlHelper.select(query, sparql_client)
           resp = sparql_client.select(query, Sparql::SPARQL_RESULTS_JSON)
           if resp.status != 200
@@ -327,7 +327,7 @@ module Kasabi
         #resulting JSON results, and extract the true/false response.
         #
         #query:: the SPARQL SELECT query
-        #sparql_client:: a configured SparqlClient object
+        #sparql_client:: a configured Sparql Client object
         def SparqlHelper.ask(query, sparql_client)
           json = SparqlHelper.select(query, sparql_client)
           return json["boolean"] == "true"
@@ -337,7 +337,7 @@ module Kasabi
         #in the triple store about the specified uri.
         #
         #uri:: the uri to test for
-        #sparql_client:: a configured SparqlClient object
+        #sparql_client:: a configured Sparql Client object
         def SparqlHelper.exists(uri, sparql_client)
            return SparqlHelper.ask("ASK { <#{uri}> ?p ?o }", sparql_client)  
         end
@@ -354,7 +354,7 @@ module Kasabi
         #be dropped from the resulting array
         #
         #query:: the SPARQL SELECT query
-        #sparql_client:: a configured SparqlClient object
+        #sparql_client:: a configured Sparql Client object
         def SparqlHelper.select_values(query, sparql_client)
            results = SparqlHelper.select(query, sparql_client)
            v = results["head"]["vars"][0];
@@ -375,7 +375,7 @@ module Kasabi
         #not be presented in the hash for that row.
         #
         #query:: the SPARQL SELECT query
-        #sparql_client:: a configured SparqlClient object
+        #sparql_client:: a configured Sparql Client object
         def SparqlHelper.select_into_array(query, sparql_client)
           results = SparqlHelper.select(query, sparql_client)
           rows = []
@@ -399,7 +399,7 @@ module Kasabi
         #If additional results are returned, then these are ignored 
         #
         #query:: the SPARQL SELECT query
-        #sparql_client:: a configured SparqlClient object                
+        #sparql_client:: a configured Sparql Client object                
         def SparqlHelper.select_single_value(query, sparql_client)
           results = SparqlHelper.select(query, sparql_client)
           v = results["head"]["vars"][0];
@@ -412,7 +412,7 @@ module Kasabi
         #and parses the resulting JSON document.
         #
         #query:: the SPARQL SELECT query
-        #sparql_client:: a configured SparqlClient object                        
+        #sparql_client:: a configured Sparql Client object                        
         def SparqlHelper.construct_to_resource_hash(query, sparql_client)
           resp = sparql_client.construct(query, "application/json")
           if resp.status != 200
@@ -427,7 +427,7 @@ module Kasabi
         #and parses the resulting JSON document.
         #
         #query:: the SPARQL SELECT query
-        #sparql_client:: a configured SparqlClient object                                
+        #sparql_client:: a configured Sparql Client object                                
         def SparqlHelper.describe_to_resource_hash(query, sparql_client)
           resp = sparql_client.describe(query, "application/json")
           if resp.status != 200
@@ -439,7 +439,7 @@ module Kasabi
         #DESCRIBE multiple resources in a single SPARQL request
         #
         #uris:: an array of URIs
-        #sparql_client:: a configured SparqlClient objec                        
+        #sparql_client:: a configured Sparql Client objec                        
         def SparqlHelper.multi_describe(uris, sparql_client)
           resp = sparql_client.multi_describe(uris, "application/json")
           if resp.status != 200
@@ -449,7 +449,7 @@ module Kasabi
         end
    
         #Describe a single URI using one of several forms of Bounded Description
-        #See SparqlClient.describe_uri
+        #See Sparql Client.describe_uri
         #
         #uri:: resource to describe
         #sparql_client:: configured SPARQL client
