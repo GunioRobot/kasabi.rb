@@ -9,7 +9,7 @@ VER = "0.0.1"
 
 RDOC_OPTS = ['--quiet', '--title', 'Kasabi Ruby Client Documentation']
 
-PKG_FILES = %w( README Rakefile CHANGES ) + 
+PKG_FILES = %w( README.md Rakefile CHANGES ) + 
   Dir.glob("{bin,tests,etc,lib}/**/*")
 
 CLEAN.include ['*.gem', 'pkg']  
