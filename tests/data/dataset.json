@@ -1,0 +1,52 @@
+{
+  "http://ldodds.kasabi.com/dataset/test-data": {
+    "http://rdfs.org/ns/void#exampleResource": [
+      {
+        "value": "http://api.kasabi.com/dataset/test-data/person/1",
+        "type": "uri"
+      }
+    ],
+    "http://purl.org/dc/terms/title": [
+      {
+        "value": "Test Data",
+        "type": "literal"
+      }
+    ],
+    "http://purl.org/dc/terms/description": [
+      {
+        "value": "The Test Data dataset",
+        "type": "literal"
+      }
+    ],
+    "http://rdfs.org/ns/void#sparqlEndpoint": [
+      {
+        "value": "http://api.kasabi.com/api/test-sparql",
+        "type": "uri"
+      }
+    ],
+    "http://rdfs.org/ns/void#uriLookupEndpoint": [
+      {
+        "value": "http://api.kasabi.com/api/test-lookup",
+        "type": "uri"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://rdfs.org/ns/void#Dataset",
+        "type": "uri"
+      }
+    ],
+    "http://xmlns.com/foaf/0.1/homepage": [
+      {
+        "value": "http://ldodds.kasabi.com/dataset/test-data",
+        "type": "uri"
+      }
+    ],
+    "http://labs.kasabi.com/ns/services#searchEndpoint": [
+      {
+        "value": "http://api.kasabi.com/api/test-search",
+        "type": "uri"
+      }
+    ]
+  }
+}

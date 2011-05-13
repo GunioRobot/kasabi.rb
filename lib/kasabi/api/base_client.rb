@@ -13,9 +13,13 @@ module Kasabi
     # * *:apikey*: required. apikey authorized to use the API
     # * *:client*: HTTPClient object instance
     def initialize(endpoint, options={})
-      @endpoint = endpoint        
+      @endpoint = endpoint   
       @client = options[:client] || HTTPClient.new()
       @apikey = options[:apikey] || nil                    
+    end
+    
+    def options
+      {:apikey => @apikey, :client => @client}        
     end
     
     def validate_response(response)

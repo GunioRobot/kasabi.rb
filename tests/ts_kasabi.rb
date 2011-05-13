@@ -7,3 +7,5 @@ require 'api/tc_facet.rb'
 require 'api/tc_search.rb'
 require 'api/tc_augment.rb'
 require 'api/tc_reconcile.rb'
+
+require 'data/tc_dataset.rb'
