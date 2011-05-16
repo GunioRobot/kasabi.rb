@@ -34,4 +34,32 @@ end
 
 puts "Update applied"
 
+cs = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"" + 
+    " xmlns:cs=\"http://purl.org/vocab/changeset/schema#\"> " + 
+  " <cs:ChangeSet rdf:about=\"http://example.com/changesets#change\">" + 
+  " <cs:subjectOfChange rdf:resource=\"#{marker}\"/> " +
+  " <cs:createdDate>2011-05-16T00:00:00Z</cs:createdDate> " +
+  " <cs:creatorName>Anne Onymous</cs:creatorName> " +
+  " <cs:changeReason>Removal</cs:changeReason> " +
+  " <cs:removal> " +
+  "  <rdf:Statement> " +
+  "      <rdf:subject rdf:resource=\"#{marker}\"/>" + 
+  "   <rdf:predicate rdf:resource=\"http://www.w3.org/2000/01/rdf-schema#comment\"/> " +
+  "      <rdf:object>Hello world</rdf:object> " +
+  " </rdf:Statement> " +
+  "  </cs:removal> " +
+  " </cs:ChangeSet> " +
+  "  </rdf:RDF> "
+
+puts "Removing triple via changeset"
+resp = dataset.apply_changeset(cs)
+
+puts "Changeset submitted. Update URI: #{resp}"
+
+while !dataset.applied?(resp)
+  #all updates are async.
+  #here we wait for update to be applied, but this is just for demo purposes
+end
+
+puts "Changeset applied"
     
