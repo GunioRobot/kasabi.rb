@@ -61,6 +61,17 @@ class DatasetTest < Test::Unit::TestCase
      assert_equal("http://api.kasabi.com/dataset/test-data/changes/1", id)
   end
 
+  def test_apply_changeset
+     resp = HTTP::Message.new_response("http://api.kasabi.com/dataset/test-data/changes/1")
+     resp.status = 202
+     mc = mock()
+     mc.expects(:post).with("http://api.kasabi.com/dataset/test-data/store", 
+       "data", {"Content-Type" => "application/vnd.talis.changeset+xml", "X_KASABI_API_KEY" => "test"} ).returns( resp )
+     dataset = Kasabi::Dataset.new("http://api.kasabi.com/dataset/test-data", { :apikey => "test", :client => mc })
+     id = dataset.apply_changeset("data")
+     assert_equal("http://api.kasabi.com/dataset/test-data/changes/1", id)
+  end
+    
   def test_store_file
      resp = HTTP::Message.new_response("http://api.kasabi.com/dataset/test-data/changes/1")
      resp.status = 202
