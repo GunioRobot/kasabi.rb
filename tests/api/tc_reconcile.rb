@@ -87,7 +87,7 @@ class ClientTest < Test::Unit::TestCase
     
     mc = mock();
     mc.expects(:get).with("http://api.kasabi.com/api/test-reconcile", 
-        {:apikey=>"test-key", "query" => {:query => "test", :limit => 3, :type_strict => :any}.to_json }
+        {"query" => {:query => "test", :limit => 3, :type_strict => :any}.to_json }, {"X_KASABI_API_KEY" => "test-key"}
       ).returns( HTTP::Message.new_response("{}") )
           
     reconciler = Kasabi::Reconcile::Client.new("http://api.kasabi.com/api/test-reconcile", :apikey=>"test-key", :client=>mc)
@@ -108,7 +108,7 @@ class ClientTest < Test::Unit::TestCase
       
     mc = mock();
     mc.expects(:get).with("http://api.kasabi.com/api/test-reconcile", 
-    {:apikey=>"test-key", "query" => {:query => "test", :limit => 3, :type_strict => :any}.to_json }
+    {"query" => {:query => "test", :limit => 3, :type_strict => :any}.to_json }, {"X_KASABI_API_KEY" => "test-key"}
       ).returns( HTTP::Message.new_response( resp.to_json ) )
           
     reconciler = Kasabi::Reconcile::Client.new("http://api.kasabi.com/api/test-reconcile", :apikey=>"test-key", :client=>mc)
@@ -131,7 +131,8 @@ class ClientTest < Test::Unit::TestCase
       
     mc = mock();
     mc.expects(:get).with("http://api.kasabi.com/api/test-reconcile", 
-        {:apikey=>"test-key", "query" => {:query => "test", :limit => 3, :type_strict => :any}.to_json }
+        {"query" => {:query => "test", :limit => 3, :type_strict => :any}.to_json }, 
+          {"X_KASABI_API_KEY" => "test-key"}
       ).returns( HTTP::Message.new_response( resp.to_json ) )
           
     reconciler = Kasabi::Reconcile::Client.new("http://api.kasabi.com/api/test-reconcile", :apikey=>"test-key", :client=>mc)
@@ -161,7 +162,7 @@ class ClientTest < Test::Unit::TestCase
     mc = mock();
     expected_query = { "q0" => { :query => "test", :limit => 3, :type_strict => :any} }
     mc.expects(:get).with("http://api.kasabi.com/api/test-reconcile", 
-    {:apikey=>"test-key", "queries" => expected_query.to_json }
+    {"queries" => expected_query.to_json }, {"X_KASABI_API_KEY" => "test-key"}
       ).returns( HTTP::Message.new_response( resp.to_json ) )
           
     reconciler = Kasabi::Reconcile::Client.new("http://api.kasabi.com/api/test-reconcile", :apikey=>"test-key", :client=>mc)

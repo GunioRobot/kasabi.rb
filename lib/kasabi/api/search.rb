@@ -26,7 +26,7 @@ module Kasabi
       def search(query, params=nil)
         search_params = build_search_params(query, params)
         search_params[:output] = "json"
-        response = @client.get(search_url(), search_params)
+        response = get(search_url(), search_params)
         
         validate_response(response)
         
@@ -42,11 +42,7 @@ module Kasabi
       def search_url()
         return "#{@endpoint}/search"
       end
-      
-      def authorize_url(search_url)
-        return "#{search_url}&apikey=#{@apikey}"
-      end
-      
+            
       # The _params_ hash can contain the following values:
       # * *:top*: the maximum number of results to return for each facet
       # * *:output*: the preferred response format, can be html or xml (the default)            
@@ -56,7 +52,7 @@ module Kasabi
         end
         search_params = build_search_params( query, params)
         search_params[:fields] = facets.join(",")
-        response = @client.get(facet_url(), search_params)
+        response = get(facet_url(), search_params)
         
         validate_response(response)
         
@@ -70,7 +66,6 @@ module Kasabi
           search_params = Hash.new  
         end
         search_params[:query] = query
-        search_params[:apikey] = @apikey
         return search_params      
       end
       

@@ -25,7 +25,7 @@ module Kasabi
       #Accepts a block to support iteration through the results. Method will yield
       #each result and its index.
       def reconcile(query, &block)
-        response = @client.get( @endpoint, {"query" => query.to_json, :apikey=>@apikey } )
+        response = get( @endpoint, {"query" => query.to_json } )
         validate_response(response)
         results = JSON.parse( response.content )
         if results["result"] && block_given?
@@ -48,7 +48,7 @@ module Kasabi
         queries.each_with_index do |query, i|
           json["q#{i}"] = query
         end
-        response = @client.get( @endpoint, {"queries" => json.to_json, :apikey=>@apikey } )
+        response = get( @endpoint, {"queries" => json.to_json } )
         validate_response(response)
         results = JSON.parse( response.content )
         if block_given?

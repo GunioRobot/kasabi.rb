@@ -14,7 +14,7 @@ module Kasabi
       end
       
       def lookup(uri)        
-        response = @client.get(@endpoint, {:about => uri, :apikey=>@apikey, :output=>"json"} )
+        response = get(@endpoint, {:about => uri, :output=>"json"} )
         validate_response(response)  
         return JSON.parse( response.content )     
       end

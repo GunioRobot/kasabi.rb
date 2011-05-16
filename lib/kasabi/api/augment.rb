@@ -18,7 +18,7 @@ module Kasabi
       #
       # uri:: the URL for the RSS 1.0 feed
       def augment_uri(uri)
-        response = @client.get(@endpoint, {:apikey=>@apikey, "data-uri" => uri})
+        response = get(@endpoint, {"data-uri" => uri})
         validate_response(response)
           
         return response.content
@@ -30,7 +30,7 @@ module Kasabi
       #
       # data:: a String containing the data to augment
       def augment(data, content_type="application/rss+xml")
-        response = @client.post("#{@endpoint}?apikey=#{@apikey}", data, {"Content-Type" => "application/rss+xml"})
+      response = post(@endpoint, data, {"Content-Type" => "application/rss+xml"})
         validate_response(response)
         return response.content
       end

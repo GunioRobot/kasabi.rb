@@ -7,7 +7,8 @@ class AugmentTest < Test::Unit::TestCase
   
   def test_augment_uri
     mc = mock()
-    mc.expects(:get).with("http://api.kasabi.com/api/test-augment-api", {:apikey=>"test-key", "data-uri" => "http://www.example.org/index.rss"}).returns( 
+    mc.expects(:get).with("http://api.kasabi.com/api/test-augment-api", {"data-uri" => "http://www.example.org/index.rss"}, 
+    {"X_KASABI_API_KEY" => "test-key"}).returns( 
     HTTP::Message.new_response("OK") )
       
     client = Kasabi::Augment::Client.new( "http://api.kasabi.com/api/test-augment-api", :apikey=>"test-key", :client=>mc) 
@@ -17,11 +18,12 @@ class AugmentTest < Test::Unit::TestCase
   
   def test_augment
      mc = mock()
-     mc.expects(:post).with("http://api.kasabi.com/api/test-augment-api?apikey=test-key", "data", anything).returns( 
+     mc.expects(:post).with("http://api.kasabi.com/api/test-augment-api", "data", 
+       {"Content-Type" => "application/rss+xml", "X_KASABI_API_KEY" => "test-key"}).returns( 
     HTTP::Message.new_response("OK") )
      
-    client = Kasabi::Augment::Client.new( "http://api.kasabi.com/api/test-augment-api", :apikey=>"test-key", :client=>mc) 
-    response = client.augment("data")    
+    client = Kasabi::Augment::Client.new( "http://api.kasabi.com/api/test-augment-api", {:apikey=>"test-key", :client=>mc}) 
+    response = client.augment("data")
     assert_equal("OK", response)
   end
   

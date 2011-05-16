@@ -67,7 +67,7 @@ EOL
     def test_query
       mc = mock()
       mc.expects(:get).with("http://api.kasabi.com/api/test-facet-api/facet", 
-        {:query => "austen", :fields => "title,author,publisher", :apikey => "test-key"}, nil).returns(
+        {:query => "austen", :fields => "title,author,publisher"}, {"X_KASABI_API_KEY" => "test-key"}).returns(
         HTTP::Message.new_response(RESULTS) )
       
       client = Kasabi::Search::Client.new("http://api.kasabi.com/api/test-facet-api", :apikey => "test-key", :client=>mc)
