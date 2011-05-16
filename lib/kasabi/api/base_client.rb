@@ -18,8 +18,18 @@ module Kasabi
       @apikey = options[:apikey] || nil                    
     end
     
-    def options
+    def client_options
       {:apikey => @apikey, :client => @client}        
+    end
+    
+    def get(uri, query=nil, headers={})
+      headers["X_KASABI_API_KEY"] = @apikey
+      return @client.get(uri, query, headers)
+    end
+    
+    def post(uri, body="", headers={})
+      headers["X_KASABI_API_KEY"] = @apikey      
+      return @client.post(uri, body, headers)
     end
     
     def validate_response(response)

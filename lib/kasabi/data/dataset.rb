@@ -17,8 +17,7 @@ module Kasabi
       if @metadata
         return @metadata
       end
-      response = @client.get(@endpoint, 
-        {:apikey=>@apikey}, 
+      response = get(@endpoint, nil, 
         {"Accept" => "application/json"})
       validate_response(response)
       @metadata = JSON.parse( response.content )
@@ -41,15 +40,15 @@ module Kasabi
     end
     
     def sparql_client()
-      return Kasabi::Sparql::Client.new( self.sparql_endpoint, self.options )
+      return Kasabi::Sparql::Client.new( self.sparql_endpoint, self.client_options )
     end
 
     def lookup_api_client()
-      return Kasabi::Lookup::Client.new( self.lookup_api, self.options )
+      return Kasabi::Lookup::Client.new( self.lookup_api, self.client_options )
     end
 
     def search_api_client()
-      return Kasabi::Search::Client.new( self.search_api, self.options )
+      return Kasabi::Search::Client.new( self.search_api, self.client_options )
     end
          
     # Store the contents of a File (or any IO stream) in the store associated with this dataset
@@ -64,7 +63,7 @@ module Kasabi
     
     #Store triples contained in the provided string    
     def store_data(data, content_type="application/rdf+xml")
-      response = @client.post("#{endpoint}/store", data, {"Content-Type" => content_type } )
+      response = post("#{endpoint}/store", data, {"Content-Type" => content_type } )
       if response.status != 202
         raise "Unable to perform request. Status: #{response.status}. Message: #{response.content}"
       end
@@ -72,13 +71,21 @@ module Kasabi
     end
     
     def store_uri(uri, content_type="application/rdf+xml")
-      response = @client.post("#{endpoint}/store", {"data_uri" => uri }, {"Content-Type" => content_type } )
+      response = post("#{endpoint}/store", {"data_uri" => uri }, {"Content-Type" => content_type } )
       if response.status != 202
         raise "Unable to perform request. Status: #{response.status}. Message: #{response.content}"
       end
       return response.content               
     end
-    
+        
+    def apply_changeset(cs)
+      response = post("#{endpoint}/store", cs, {"Content-Type" => "application/vnd.talis.changeset+xml"} )
+      if response.status != 202
+        raise "Unable to apply changeset. Status: #{response.status}. Message: #{response.content}"
+      end
+      return response.content      
+    end
+        
     private
     
       def property(predicate)
