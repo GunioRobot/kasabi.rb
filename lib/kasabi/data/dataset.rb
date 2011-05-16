@@ -85,7 +85,16 @@ module Kasabi
       end
       return response.content      
     end
-        
+       
+    def applied?(update_uri)
+      response = get( update_uri, nil, {"Content-Type" => "application/json"} )
+      if response.status != 200
+          raise "Unable to determine update status. Status: #{response.status}. Message: #{response.content}"
+      end
+      json = JSON.parse(response.content)
+      return json["Status"] && json["Status"] == "Applied"
+    end
+     
     private
     
       def property(predicate)

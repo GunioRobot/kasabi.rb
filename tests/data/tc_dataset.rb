@@ -85,6 +85,13 @@ class DatasetTest < Test::Unit::TestCase
      id = dataset.store_uri("http://www.example.org")
      assert_equal("http://api.kasabi.com/dataset/test-data/changes/1", id)
   end
-    
+  
+  def test_applied?
+    resp = HTTP::Message.new_response("{ 'Status' => 'Applied' }")
+    mc = mock()
+    mc.expects(:get).with("http://api.kasabi.com/dataset/test-data/changes/1", nil, {"Content-Type" => "application/json"})
+    dataset = Kasabi::Dataset.new("http://api.kasabi.com/dataset/test-data", { :apikey => "test", :client => mc })
+    assert_equal(true, dataset.applied?("http://api.kasabi.com/dataset/test-data/changes/1"))
+  end  
   
 end
