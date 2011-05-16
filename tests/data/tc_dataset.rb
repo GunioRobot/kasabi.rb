@@ -11,8 +11,7 @@ class DatasetTest < Test::Unit::TestCase
   
   def test_read_metadata    
     mc = mock()
-    mc.expects(:get).with("http://api.kasabi.com/dataset/test-data", 
-    {:apikey=>"test"}, {"Accept" => "application/json"} ).returns(
+    mc.expects(:get).with("http://api.kasabi.com/dataset/test-data", nil, {"Accept" => "application/json", "X_KASABI_API_KEY" => "test"} ).returns(
     HTTP::Message.new_response( @metadata ))
     
     dataset = Kasabi::Dataset.new("http://api.kasabi.com/dataset/test-data", { :apikey => "test", :client => mc })
@@ -23,7 +22,7 @@ class DatasetTest < Test::Unit::TestCase
   def test_read_properties
     mc = mock()
     mc.expects(:get).with("http://api.kasabi.com/dataset/test-data", 
-    {:apikey=>"test"}, {"Accept" => "application/json"} ).returns(
+    nil, {"Accept" => "application/json", "X_KASABI_API_KEY" => "test"} ).returns(
     HTTP::Message.new_response( @metadata ))
     
     dataset = Kasabi::Dataset.new("http://api.kasabi.com/dataset/test-data", { :apikey => "test", :client => mc })
@@ -45,7 +44,7 @@ class DatasetTest < Test::Unit::TestCase
      resp.status = 202
      mc = mock()
      mc.expects(:post).with("http://api.kasabi.com/dataset/test-data/store", 
-       "data", {"Content-Type" => "application/rdf+xml"} ).returns( resp )
+       "data", {"Content-Type" => "application/rdf+xml", "X_KASABI_API_KEY" => "test"} ).returns( resp )
      dataset = Kasabi::Dataset.new("http://api.kasabi.com/dataset/test-data", { :apikey => "test", :client => mc })
      id = dataset.store_data("data")
      assert_equal("http://api.kasabi.com/dataset/test-data/changes/1", id)
@@ -56,7 +55,7 @@ class DatasetTest < Test::Unit::TestCase
      resp.status = 202    
      mc = mock()
      mc.expects(:post).with("http://api.kasabi.com/dataset/test-data/store", 
-       "data", {"Content-Type" => "text/turtle"} ).returns( resp )
+       "data", {"Content-Type" => "text/turtle", "X_KASABI_API_KEY" => "test"} ).returns( resp )
      dataset = Kasabi::Dataset.new("http://api.kasabi.com/dataset/test-data", { :apikey => "test", :client => mc })
      id = dataset.store_data("data", "text/turtle")
      assert_equal("http://api.kasabi.com/dataset/test-data/changes/1", id)
@@ -67,7 +66,7 @@ class DatasetTest < Test::Unit::TestCase
      resp.status = 202
      mc = mock()
      mc.expects(:post).with("http://api.kasabi.com/dataset/test-data/store", 
-       "data", {"Content-Type" => "application/rdf+xml"} ).returns( resp )
+       "data", {"Content-Type" => "application/rdf+xml", "X_KASABI_API_KEY" => "test"} ).returns( resp )
      io = StringIO.new("data")
          
      dataset = Kasabi::Dataset.new("http://api.kasabi.com/dataset/test-data", { :apikey => "test", :client => mc })
@@ -81,7 +80,7 @@ class DatasetTest < Test::Unit::TestCase
      resp.status = 202
      mc = mock()
      mc.expects(:post).with("http://api.kasabi.com/dataset/test-data/store", 
-       {"data_uri" => "http://www.example.org"}, {"Content-Type" => "application/rdf+xml"} ).returns( resp )
+       {"data_uri" => "http://www.example.org"}, {"Content-Type" => "application/rdf+xml", "X_KASABI_API_KEY" => "test"} ).returns( resp )
      dataset = Kasabi::Dataset.new("http://api.kasabi.com/dataset/test-data", { :apikey => "test", :client => mc })
      id = dataset.store_uri("http://www.example.org")
      assert_equal("http://api.kasabi.com/dataset/test-data/changes/1", id)
