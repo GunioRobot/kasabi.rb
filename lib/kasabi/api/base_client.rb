@@ -23,12 +23,12 @@ module Kasabi
     end
     
     def get(uri, query=nil, headers={})
-      headers["X_KASABI_API_KEY"] = @apikey
+      headers["X_KASABI_APIKEY"] = @apikey
       return @client.get(uri, query, headers)
     end
     
     def post(uri, body="", headers={})
-      headers["X_KASABI_API_KEY"] = @apikey      
+      headers["X_KASABI_APIKEY"] = @apikey      
       return @client.post(uri, body, headers)
     end
     
