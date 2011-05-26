@@ -92,7 +92,7 @@ module Kasabi
           raise "Unable to determine update status. Status: #{response.status}. Message: #{response.content}"
       end
       json = JSON.parse(response.content)
-      return json["Status"] && json["Status"] == "Applied"
+      return json["status"] && json["status"] == "applied"
     end
      
     private

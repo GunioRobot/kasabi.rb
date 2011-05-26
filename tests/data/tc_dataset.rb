@@ -98,7 +98,7 @@ class DatasetTest < Test::Unit::TestCase
   end
   
   def test_applied?
-    resp = HTTP::Message.new_response("{ \"Status\": \"Applied\" }")
+    resp = HTTP::Message.new_response("{ \"status\": \"applied\" }")
     mc = mock()
     mc.expects(:get).with("http://api.kasabi.com/dataset/test-data/changes/1", nil, 
       {"Content-Type" => "application/json", "X_KASABI_APIKEY" => "test"}).returns(resp)
