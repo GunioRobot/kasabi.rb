@@ -1,0 +1,74 @@
+{
+  "http://data.kasabi.com/dataset/nasa/spacecraft/1968-025A": {
+    "http://purl.org/net/schemas/space/discipline": [
+      {
+        "type": "uri",
+        "value": "http://data.kasabi.com/dataset/nasa/discipline/engineering"
+      }
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "type": "literal",
+        "value": "Apollo 6"
+      }
+    ],
+    "http://purl.org/net/schemas/space/internationalDesignator": [
+      {
+        "type": "literal",
+        "value": "1968-025A"
+      }
+    ],
+    "http://purl.org/net/schemas/space/alternateName": [
+      {
+        "type": "literal",
+        "value": "03170"
+      },
+      {
+        "type": "literal",
+        "value": "AS-502"
+      }
+    ],
+    "http://purl.org/dc/elements/1.1/description": [
+      {
+        "type": "literal",
+        "value": "The unmanned Saturn/Apollo 6 mission was designed as the final qualification of the Saturn V launch vehicle and Apollo spacecraft for manned Apollo missions. The spacecraft consisted of the three stage Saturn V, the Apollo Command and Service Module (CSM) and a boilerplate Lunar Module (LM). The primary objectives of the mission were to demonstrate structural and thermal integrity and compatibility of the launch vehicle and spacecraft, confirm launch loads and dynamic characteristics, and verify stage separations, propulsion, guidance and control, electrical systems, emergency detection system, and mission support facilities and operations, including Command Module recovery."
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "type": "uri",
+        "value": "http://purl.org/net/schemas/space/Spacecraft"
+      }
+    ],
+    "http://xmlns.com/foaf/0.1/homepage": [
+      {
+        "type": "uri",
+        "value": "http://nssdc.gsfc.nasa.gov/database/MasterCatalog?sc=1968-025A"
+      }
+    ],
+    "http://purl.org/net/schemas/space/agency": [
+      {
+        "type": "literal",
+        "value": "United States"
+      }
+    ],
+    "http://xmlns.com/foaf/0.1/depiction": [
+      {
+        "type": "uri",
+        "value": "http://nssdc.gsfc.nasa.gov/image/spacecraft/apollo6_launch.jpg"
+      }
+    ],
+    "http://purl.org/net/schemas/space/mass": [
+      {
+        "type": "literal",
+        "value": "36806.0"
+      }
+    ],
+    "http://purl.org/net/schemas/space/launch": [
+      {
+        "type": "uri",
+        "value": "http://nasa.dataincubator.org/launch/1968-025"
+      }
+    ]
+  }
+}

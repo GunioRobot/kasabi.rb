@@ -16,7 +16,9 @@ module Kasabi
       def lookup(uri)        
         response = get(@endpoint, {:about => uri, :output=>"json"} )
         validate_response(response)  
-        return JSON.parse( response.content )     
+        graph = RDF::Graph.new()
+        graph.insert( RDF::JSON::Reader.new( StringIO.new( response.content ) ) )        
+        return graph
       end
       
     end
