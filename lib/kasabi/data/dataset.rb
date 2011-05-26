@@ -47,7 +47,9 @@ module Kasabi
       :homepage => "http://xmlns.com/foaf/0.1/homepage",
       :sparql_endpoint => "http://rdfs.org/ns/void#sparqlEndpoint",
       :lookup_api => "http://rdfs.org/ns/void#uriLookupEndpoint",
-      :search_api => "http://labs.kasabi.com/ns/services#searchEndpoint" 
+      :search_api => "http://labs.kasabi.com/ns/services#searchEndpoint",
+      :augmentation_api => "http://labs.kasabi.com/ns/services#augmentationEndpoint",
+      :reconciliation_api => "http://labs.kasabi.com/ns/services#reconciliationEndpoint"
     }
           
     PROPERTIES.keys.each do |arg|

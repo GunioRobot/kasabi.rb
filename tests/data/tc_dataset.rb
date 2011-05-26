@@ -47,6 +47,8 @@ class DatasetTest < Test::Unit::TestCase
     assert_equal("http://api.kasabi.com/api/test-sparql", dataset.sparql_endpoint)
     assert_equal("http://api.kasabi.com/api/test-lookup", dataset.lookup_api)
     assert_equal("http://api.kasabi.com/api/test-search", dataset.search_api)
+    assert_equal("http://api.kasabi.com/api/test-recon", dataset.reconciliation_api)
+    assert_equal("http://api.kasabi.com/api/test-augment", dataset.augmentation_api)
     
     assert_equal("http://api.kasabi.com/api/test-sparql", dataset.sparql_client.endpoint)
     assert_equal("http://api.kasabi.com/api/test-lookup", dataset.lookup_api_client.endpoint)

@@ -47,6 +47,19 @@
         "value": "http://api.kasabi.com/api/test-search",
         "type": "uri"
       }
-    ]
+    ],
+    "http://labs.kasabi.com/ns/services#reconciliationEndpoint": [
+      {
+        "value": "http://api.kasabi.com/api/test-recon",
+        "type": "uri"
+      }
+    ],
+    "http://labs.kasabi.com/ns/services#augmentationEndpoint": [
+      {
+        "value": "http://api.kasabi.com/api/test-augment",
+        "type": "uri"
+      }
+    ]    
+    
   }
 }
