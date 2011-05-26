@@ -4,7 +4,7 @@ require 'rubygems'
 require 'kasabi'
 
 client = Kasabi::Sparql::Client.new(
-  "http://api.kasabi.com/api/nasa-sparql-service", :apikey=>ENV["KASABI_API_KEY"])
+  "http://api.kasabi.com/api/sparql-endpoint-nasa", :apikey=>ENV["KASABI_API_KEY"])
     
 SPARQL_SELECT = <<-EOL
 PREFIX space: <http://purl.org/net/schemas/space/>
