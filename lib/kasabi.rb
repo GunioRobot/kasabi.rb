@@ -1,7 +1,9 @@
 require 'rubygems'
+
 require 'httpclient'
 require 'json'
 require 'linkeddata'
+require 'uri'
 
 require 'kasabi/api/base_client'
 require 'kasabi/api/lookup'

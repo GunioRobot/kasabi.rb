@@ -9,9 +9,24 @@ class DatasetTest < Test::Unit::TestCase
     @metadata = File.read(File.join(File.dirname(__FILE__), "dataset.json"))
   end
   
+  def test_constructor
+    dataset = Kasabi::Dataset.new("http://api.kasabi.com/dataset/test-data", { :apikey => "test" })
+    assert_equal("http://api.kasabi.com/dataset/test-data", dataset.endpoint)
+    assert_equal("http://data.kasabi.com/dataset/test-data", dataset.uri)
+
+    dataset = Kasabi::Dataset.new("http://data.kasabi.com/dataset/test-data", { :apikey => "test" })
+    assert_equal("http://api.kasabi.com/dataset/test-data", dataset.endpoint)
+    assert_equal("http://data.kasabi.com/dataset/test-data", dataset.uri)
+
+    dataset = Kasabi::Dataset.new("http://www.kasabi.com/dataset/test-data", { :apikey => "test" })
+    assert_equal("http://api.kasabi.com/dataset/test-data", dataset.endpoint)
+    assert_equal("http://data.kasabi.com/dataset/test-data", dataset.uri)
+      
+  end
+  
   def test_read_metadata    
     mc = mock()
-    mc.expects(:get).with("http://api.kasabi.com/dataset/test-data", nil, {"Accept" => "application/json", "X_KASABI_APIKEY" => "test"} ).returns(
+    mc.expects(:get).with("http://data.kasabi.com/dataset/test-data", nil, {"Accept" => "application/json", "X_KASABI_APIKEY" => "test"} ).returns(
     HTTP::Message.new_response( @metadata ))
     
     dataset = Kasabi::Dataset.new("http://api.kasabi.com/dataset/test-data", { :apikey => "test", :client => mc })
@@ -21,7 +36,7 @@ class DatasetTest < Test::Unit::TestCase
   
   def test_read_properties
     mc = mock()
-    mc.expects(:get).with("http://api.kasabi.com/dataset/test-data", 
+    mc.expects(:get).with("http://data.kasabi.com/dataset/test-data", 
     nil, {"Accept" => "application/json", "X_KASABI_APIKEY" => "test"} ).returns(
     HTTP::Message.new_response( @metadata ))
     

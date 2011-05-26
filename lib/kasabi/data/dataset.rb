@@ -2,6 +2,9 @@ module Kasabi
   
   class Dataset < Kasabi::BaseClient
     
+    attr_reader :short_code
+    attr_reader :uri
+    
     #Initialize the client to work with a specific dataset endpoint
     #Dataset endpoints are available from api.kasabi.com/data/...
     #
@@ -9,7 +12,21 @@ module Kasabi
     # * *:apikey*: required. apikey authorized to use the API
     # * *:client*: HTTPClient object instance
     def initialize(endpoint, options={})
-      super(endpoint, options)                 
+      super(endpoint, options)
+      uri = URI.parse(endpoint)
+      domain = uri.host.split(".")[0]
+      case domain
+        when "data"
+          @uri = endpoint
+          @endpoint = endpoint.gsub("http://data", "http://api")  
+        when "api"
+          @endpoint = endpoint
+          @uri = endpoint.gsub("http://api", "http://data")
+        else
+          #probably website, e.g. beta.kasabi or www.kasabi
+          @endpoint = "http://api.kasabi.com" + uri.path
+          @uri = "http://data.kasabi.com" + uri.path
+      end      
     end
     
     #Read the metadata about this dataset from the live service
@@ -17,7 +34,7 @@ module Kasabi
       if @metadata
         return @metadata
       end
-      response = get(@endpoint, nil, 
+      response = get(@uri, nil, 
         {"Accept" => "application/json"})
       validate_response(response)
       @metadata = JSON.parse( response.content )
