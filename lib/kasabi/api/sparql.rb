@@ -94,141 +94,16 @@ module Kasabi
     #A simple SPARQL client that handles the basic HTTP traffic
     class Client < BaseClient
       
-        attr_reader :graphs
-        attr_reader :named_graphs      
-        
         #Initialize a client for a specific endpoint
         #
         #endpoint:: uri of the SPARQL endpoint
         #options:: hash containing additional configuration options, including +:apikey+ for specifying api key
         def initialize(endpoint, options={} )
          super(endpoint, options)
-         @graphs = options[:graphs] || nil
-         @named_graphs = options[:named_graphs] || nil
         end 
-        
-        #Add a default graph. This will be added as a default graph in the request protocol
-        def add_default_graph(graph_uri)
-          if @graphs == nil
-             @graphs = []
-          end  
-          @graphs << graph_uri
-        end
 
-        #Add a named graph. This will be added as a named graph in the request protocol
-        def add_named_graph(graph_uri)
-          if @named_graphs == nil
-            @named_graphs = []
-          end  
-          @named_graphs << graph_uri
-        end
-                      
-        #Perform a sparql query
-        #
-        #sparql:: a valid SPARQL query
-        #format:: specific a request format. Usually a media-type, but may be a name for a type, if not using Conneg
-        #graphs:: an array of default graphs
-        #named_graphs:: an array of named graphs
-        def query(sparql, format=nil, graphs=nil, named_graphs=nil)
-          
-          params = {}
-          params["query"] = sparql
-          
-          if @apikey != nil
-            params["apikey"] = @apikey
-          end
-          
-          if graphs != nil
-            params["default-graph-uri"] = graphs
-          elsif @graphs != nil
-            params["default-graph-uri"] = @graphs
-          end          
-
-          if named_graphs != nil
-            params["named-graph-uri"] = named_graphs
-          elsif @named_graphs != nil
-            params["named-graph-uri"] = @named_graphs
-          end
-                   
-          headers = {}
-          if format != nil
-            
-            if @output_parameter_name != nil
-              params[@output_parameter_name] = format
-            else 
-              headers["Accept"] = format  
-            end
-            
-          end
-          
-          return @client.get( @endpoint, params, headers )
-        end
-        
-        #Describe a uri, optionally specifying a form of bounded description
-        #
-        #uri:: the uri to describe
-        #format:: mimetype for results
-        #type:: symbol indicating type of description, i.e. +:cbd+, +:scbd+, +:lcbd+, or +:slcbd+
-        def describe_uri(uri, format="application/rdf+xml", type=:cbd)
-          template = Sparql::DESCRIPTIONS[type]
-          if template == nil
-            raise "Unknown description type"
-          end
-          query = Sparql::SparqlHelper.apply_initial_bindings(template, {"uri" => "<#{uri}>"} )
-          return describe(query, format)
-        end
-        
-        #Perform a SPARQL DESCRIBE query.
-        #
-        #query:: the SPARQL query
-        #format:: the preferred response format
-        def describe(query, format="application/rdf+xml")
-          return query(query, format)
-        end
-
-        #DESCRIBE multiple resources in a single query. The provided array should contain
-        #the uris that are to be described
-        #
-        #This will generate a query like:
-        # DESCRIBE <http://www.example.org> <http://www.example.com> ...
-        #
-        #uris:: list of the uris to be described
-        #format:: the preferred response format. Default is RDF/XML
-        def multi_describe(uris, format="application/rdf+xml")
-          query = "DESCRIBE " + uris.map {|u| "<#{u}>" }.join(" ")
-          return query(query, format)
-        end
-              
-        #Perform a SPARQL CONSTRUCT query.
-        #
-        #query:: the SPARQL query
-        #format:: the preferred response format        
-        def construct(query, format="application/rdf+xml")
-          return query(query, format)
-        end
-        
-        #Perform a SPARQL ASK query.
-        #
-        #query:: the SPARQL query
-        #format:: the preferred response format    
-        def ask(query, format=Sparql::SPARQL_RESULTS_JSON)
-          return query(query, format)
-        end
-        
-        #Perform a SPARQL SELECT query.
-        #
-        #query:: the SPARQL query
-        #format:: the preferred response format    
-        def select(query, format=Sparql::SPARQL_RESULTS_JSON)
-          return query(query, format)
-        end
-        
-    end
-   
-    #Simple helper class for manipulating and executing SPARQL queries and manipulating the results
-    class SparqlHelper
         VARIABLE_MATCHER = /(\?|\$)([a-zA-Z]+)/
-        
+      
         #Apply some initial bindings to parameters in a query
         #
         #The keys in the values hash are used to replace variables in a query
@@ -240,7 +115,7 @@ module Kasabi
         #
         #query:: the query whose initial bindings are to be set
         #values:: hash of query name to value
-        def SparqlHelper.apply_initial_bindings(query, bindings={})
+        def Client.apply_initial_bindings(query, bindings={})
             copy = query.clone()
             copy.gsub!(VARIABLE_MATCHER) do |pattern|
               key = $2
@@ -252,7 +127,7 @@ module Kasabi
             end            
             return copy  
         end
-        
+
         #Convert a SPARQL query result binding into a hash suitable for passing
         #to the apply_initial_bindings method.
         #
@@ -265,7 +140,7 @@ module Kasabi
         #query
         #
         #result:: hash conforming to structure of a <tt>binding</tt> in the SPARQL JSON format
-        def SparqlHelper.result_to_query_binding(result)
+        def Client.result_to_query_binding(result)
           hash = {}
           result.each_pair do |key, value|
             if value["type"] == "uri"
@@ -279,8 +154,7 @@ module Kasabi
             end
           end
           return hash
-        end
-        
+        end        
         #Convert Ruby hash structured according to SPARQL JSON format
         #into an array of hashes by calling result_to_query_binding on each binding
         #into the results.
@@ -289,8 +163,8 @@ module Kasabi
         #<tt>results = Sparql::SparqlHelper.select(query, sparql_client)</tt>
         #<tt>bindings = Sparql::SparqlHelper.results_to_query_bindings(results)</tt>
         #
-        #results:: hash conforming to SPARQL SELECT structure
-        def SparqlHelper.results_to_query_bindings(results)
+        #results:: hash conforming to SPARQL SELECT structure        
+        def Client.results_to_query_bindings(results)
           bindings = []
           
           results["results"]["bindings"].each do |result|
@@ -298,42 +172,100 @@ module Kasabi
           end
           return bindings
         end              
-        
-        #Perform a simple SELECT query on an endpoint.
-        #Will request the results using the SPARQL JSON results format, and parse the
-        #resulting JSON results. The result will therefore be a simple ruby hash of the results
+                                
+        #Perform a sparql query.
         #
-        #An error will be raised if the response is HTTP OK.
-        #
-        #query:: the SPARQL SELECT query
-        #sparql_client:: a configured Sparql Client object
-        def SparqlHelper.select(query, sparql_client)
-          resp = sparql_client.select(query, Sparql::SPARQL_RESULTS_JSON)
-          if resp.status != 200
-            raise "Error performing sparql query: #{resp.status} #{resp.reason}\n#{resp.content}"
+        #sparql:: a valid SPARQL query
+        #format:: specific a request format. Usually a media-type, but may be a name for a type, if not using Conneg
+        #graphs:: an array of default graphs
+        #named_graphs:: an array of named graphs
+        def query(sparql, format=nil)          
+          headers = {}
+          if format != nil            
+            headers["Accept"] = format  
           end
-          return JSON.parse( resp.content )
+          
+          response = get( @endpoint, {"query" => sparql}, headers )
+          validate_response(response)
+          return response.content
         end
-    
-        #Performs an ASK query on an endpoint, returing a boolean true/false response
+        
+        #Describe a uri, optionally specifying a form of bounded description
         #
-        #Will request the results using the SPARQL JSON results format, parse the
-        #resulting JSON results, and extract the true/false response.
+        #uri:: the uri to describe
+        #format:: mimetype for results
+        #type:: symbol indicating type of description, i.e. +:cbd+, +:scbd+, +:lcbd+, or +:slcbd+
+        def describe_uri(uri, type=:cbd)
+          template = Sparql::DESCRIPTIONS[type]
+          if template == nil
+            raise "Unknown description type"
+          end
+          query = Client.apply_initial_bindings(template, {"uri" => "<#{uri}>"} )
+          return describe(query)
+        end
+        
+        #Perform a SPARQL DESCRIBE query.
         #
-        #query:: the SPARQL SELECT query
-        #sparql_client:: a configured Sparql Client object
-        def SparqlHelper.ask(query, sparql_client)
-          json = SparqlHelper.select(query, sparql_client)
+        #query:: the SPARQL query
+        #format:: the preferred response format
+        def describe(query)
+          response = query(query, "application/json")
+          graph = RDF::Graph.new()
+          graph.insert( RDF::JSON::Reader.new( StringIO.new( response ) ) )
+          return graph                  
+        end
+
+        #DESCRIBE multiple resources in a single query. The provided array should contain
+        #the uris that are to be described
+        #
+        #This will generate a query like:
+        # DESCRIBE <http://www.example.org> <http://www.example.com> ...
+        #
+        #uris:: list of the uris to be described
+        #format:: the preferred response format. Default is RDF/XML
+        def multi_describe(uris)
+          query = "DESCRIBE " + uris.map {|u| "<#{u}>" }.join(" ")
+          response = query(query, "application/json")
+          graph = RDF::Graph.new()
+          graph.insert( RDF::JSON::Reader.new( StringIO.new( response ) ) )
+          return graph                  
+        end
+              
+        #Perform a SPARQL CONSTRUCT query.
+        #
+        #query:: the SPARQL query
+        #format:: the preferred response format        
+        def construct(query)
+          response = query(query, "application/json")
+          graph = RDF::Graph.new()
+          graph.insert( RDF::JSON::Reader.new( StringIO.new( response ) ) )
+          return graph                  
+        end
+        
+        #Perform a SPARQL ASK query.
+        #
+        #query:: the SPARQL query
+        #format:: the preferred response format    
+        def ask(query)
+          json = JSON.parse( query(query, Sparql::SPARQL_RESULTS_JSON) )
           return json["boolean"] == "true"
         end
-    
+
         #Performs an ASK query on the SPARQL endpoint to test whether there are any statements
         #in the triple store about the specified uri.
         #
         #uri:: the uri to test for
         #sparql_client:: a configured Sparql Client object
-        def SparqlHelper.exists(uri, sparql_client)
-           return SparqlHelper.ask("ASK { <#{uri}> ?p ?o }", sparql_client)  
+        def exists?(uri)
+           return ask("ASK { <#{uri}> ?p ?o }")  
+        end
+                
+        #Perform a SPARQL SELECT query.
+        #
+        #query:: the SPARQL query
+        #format:: the preferred response format    
+        def select(query)
+          return JSON.parse( query(query, Sparql::SPARQL_RESULTS_JSON) )
         end
         
         #Perform a simple SELECT query on an endpoint and return a simple array of values
@@ -349,8 +281,8 @@ module Kasabi
         #
         #query:: the SPARQL SELECT query
         #sparql_client:: a configured Sparql Client object
-        def SparqlHelper.select_values(query, sparql_client)
-           results = SparqlHelper.select(query, sparql_client)
+        def select_values(query)
+           results = select(query)
            v = results["head"]["vars"][0];
            values = [];
            results["results"]["bindings"].each do |binding|
@@ -358,7 +290,7 @@ module Kasabi
            end
            return values           
         end
-
+        
         #Perform a simple SELECT query and return the results as a simple array of hashes.
         #Each entry in the array will be a row in the results, and each hash will have a key for 
         #each variable.
@@ -370,8 +302,8 @@ module Kasabi
         #
         #query:: the SPARQL SELECT query
         #sparql_client:: a configured Sparql Client object
-        def SparqlHelper.select_into_array(query, sparql_client)
-          results = SparqlHelper.select(query, sparql_client)
+        def select_into_array(query)
+          results = select(query)
           rows = []
           results["results"]["bindings"].each do |binding|
             row = {}
@@ -394,69 +326,13 @@ module Kasabi
         #
         #query:: the SPARQL SELECT query
         #sparql_client:: a configured Sparql Client object                
-        def SparqlHelper.select_single_value(query, sparql_client)
-          results = SparqlHelper.select(query, sparql_client)
+        def select_single_value(query)
+          results = select(query)
           v = results["head"]["vars"][0];
           return results["results"]["bindings"][0][v]["value"]           
-        end
-        
-        #Perform a SPARQL CONSTRUCT query against an endpoint, requesting the results in JSON 
-        #
-        #Will request the results as application/json (with the expectation that it returns RDF_JSON), 
-        #and parses the resulting JSON document.
-        #
-        #query:: the SPARQL SELECT query
-        #sparql_client:: a configured Sparql Client object                        
-        def SparqlHelper.construct_to_resource_hash(query, sparql_client)
-          resp = sparql_client.construct(query, "application/json")
-          if resp.status != 200
-            raise "Error performing sparql query: #{resp.status} #{resp.reason}\n#{resp.content}"
-          end
-          return JSON.parse( resp.content )          
-        end
-
-        #Perform a SPARQL DESCRIBE query against an endpoint, requesting the results in JSON 
-        #
-        #Will request the results as application/json (with the expectation that it returns RDF_JSON), 
-        #and parses the resulting JSON document.
-        #
-        #query:: the SPARQL SELECT query
-        #sparql_client:: a configured Sparql Client object                                
-        def SparqlHelper.describe_to_resource_hash(query, sparql_client)
-          resp = sparql_client.describe(query, "application/json")
-          if resp.status != 200
-            raise "Error performing sparql query: #{resp.status} #{resp.reason}\n#{resp.content}"
-          end
-          return JSON.parse( resp.content )          
-        end
-        
-        #DESCRIBE multiple resources in a single SPARQL request
-        #
-        #uris:: an array of URIs
-        #sparql_client:: a configured Sparql Client objec                        
-        def SparqlHelper.multi_describe(uris, sparql_client)
-          resp = sparql_client.multi_describe(uris, "application/json")
-          if resp.status != 200
-            raise "Error performing sparql query: #{resp.status} #{resp.reason}\n#{resp.content}"
-          end
-          return JSON.parse( resp.content )                    
-        end
-   
-        #Describe a single URI using one of several forms of Bounded Description
-        #See Sparql Client.describe_uri
-        #
-        #uri:: resource to describe
-        #sparql_client:: configured SPARQL client
-        #type:: form of bounded description to generate
-        def SparqlHelper.describe_uri(uri, sparql_client, type=:cbd)
-          resp = sparql_client.describe_uri(uri, "application/json", type)
-          if resp.status != 200
-            raise "Error performing sparql query: #{resp.status} #{resp.reason}\n#{resp.content}"
-          end
-          return JSON.parse( resp.content )                              
-        end
-    end     
-        
+        end        
+    end   
+  
   end
   
 end
