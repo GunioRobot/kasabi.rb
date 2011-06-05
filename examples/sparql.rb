@@ -26,8 +26,6 @@ puts "Get name of spacecraft launched on 16th July 1969, as JSON"
 response = client.select(SPARQL_SELECT, "application/json")
 json = JSON.parse( response.content )
 
-json["results"]["bindings"].each do |b|
- 
-  puts b["name"]["value"]
-  
+json["results"]["bindings"].each do |b| 
+  puts b["name"]["value"]  
 end    
