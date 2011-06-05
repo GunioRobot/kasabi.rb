@@ -14,7 +14,7 @@ module Kasabi
         super(endpoint, options)
       end
       
-      # Search the Metabox indexes.
+      # Perform a search
       #
       # query:: the query to perform.
       # params:: additional query parameters (see below)
