@@ -1,6 +1,5 @@
 module Kasabi
   
-  # TODO attribution
   class Dataset < Kasabi::BaseClient
     
     attr_reader :short_code
