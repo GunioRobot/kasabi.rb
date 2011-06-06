@@ -24,10 +24,11 @@ dataset.client.debug_dev = $stderr
 puts "Dataset: #{dataset.endpoint}"
 puts "API key: #{apikey}"
 puts "Submitting test data to Kasabi dataset:\n#{to_add}"  
-resp = dataset.store_data( to_add, "text/turtle")
+client = dataset.store_api_client()
+resp = client.store_data( to_add, "text/turtle")
 puts "Data submitted. Update URI: #{resp}"
 
-while !dataset.applied?(resp)
+while !client.applied?(resp)
   #all updates are async.
   #here we wait for update to be applied, but this is just for demo purposes
 end
@@ -52,11 +53,11 @@ cs = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"" +
   "  </rdf:RDF> "
 
 puts "Removing triple via changeset"
-resp = dataset.apply_changeset(cs)
+resp = client.apply_changeset(cs)
 
 puts "Changeset submitted. Update URI: #{resp}"
 
-while !dataset.applied?(resp)
+while !client.applied?(resp)
   #all updates are async.
   #here we wait for update to be applied, but this is just for demo purposes
 end
