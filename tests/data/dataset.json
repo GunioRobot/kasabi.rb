@@ -1,5 +1,5 @@
 {
-  "http://ldodds.kasabi.com/dataset/test-data": {
+  "http://data.kasabi.com/dataset/test-data": {
     "http://rdfs.org/ns/void#exampleResource": [
       {
         "value": "http://api.kasabi.com/dataset/test-data/person/1",

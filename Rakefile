@@ -5,7 +5,7 @@ require 'rake/testtask'
 require 'rake/clean'
 
 NAME = "kasabi"
-VER = "0.1"
+VER = "0.1.1"
 
 RDOC_OPTS = ['--quiet', '--title', 'Kasabi Ruby Client Documentation']
 

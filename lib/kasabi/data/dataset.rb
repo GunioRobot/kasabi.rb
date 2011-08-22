@@ -84,7 +84,7 @@ module Kasabi
     
       def property(predicate)
         metadata()
-        return @metadata[ @metadata.keys[0] ][predicate][0]["value"]     
+        return @metadata[ @uri ][predicate][0]["value"]     
       end
   end
 end
