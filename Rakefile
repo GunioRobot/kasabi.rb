@@ -5,7 +5,7 @@ require 'rake/testtask'
 require 'rake/clean'
 
 NAME = "kasabi"
-VER = "0.1.1"
+VER = "0.1.2"
 
 RDOC_OPTS = ['--quiet', '--title', 'Kasabi Ruby Client Documentation']
 
@@ -37,8 +37,7 @@ SPEC =
     s.add_dependency("json", ">= 1.1.3")
     s.add_dependency("mocha", ">= 0.9.5")
     s.add_dependency("mime-types", ">= 1.16")
-    #FIXME versions
-    s.add_dependency("linkeddata")
+    s.add_dependency("linkeddata", ">= 0.3.1")
   end
       
 Rake::GemPackageTask.new(SPEC) do |pkg|
