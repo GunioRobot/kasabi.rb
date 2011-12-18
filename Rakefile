@@ -9,16 +9,16 @@ VER = "0.1.2"
 
 RDOC_OPTS = ['--quiet', '--title', 'Kasabi Ruby Client Documentation']
 
-PKG_FILES = %w( README.md Rakefile CHANGES ) + 
+PKG_FILES = %w( README.md Rakefile CHANGES ) +
   Dir.glob("{bin,tests,etc,lib}/**/*")
 
-CLEAN.include ['*.gem', 'pkg']  
+CLEAN.include ['*.gem', 'pkg']
 SPEC =
   Gem::Specification.new do |s|
     s.name = NAME
     s.version = VER
     s.platform = Gem::Platform::RUBY
-    s.required_ruby_version = ">= 1.8.5"    
+    s.required_ruby_version = ">= 1.8.5"
     s.has_rdoc = true
     s.extra_rdoc_files = ["CHANGES"]
     s.rdoc_options = RDOC_OPTS
@@ -29,7 +29,7 @@ SPEC =
     s.homepage = 'http://github.com/kasabi/kasabi.rb'
     s.rubyforge_project = 'kasabi'
     s.files = PKG_FILES
-    s.require_path = "lib" 
+    s.require_path = "lib"
     s.bindir = "bin"
     #s.executables = ["..."]
     s.test_file = "tests/ts_kasabi.rb"
@@ -39,7 +39,7 @@ SPEC =
     s.add_dependency("mime-types", ">= 1.16")
     s.add_dependency("linkeddata", ">= 0.3.1")
   end
-      
+
 Rake::GemPackageTask.new(SPEC) do |pkg|
     pkg.need_tar = true
 end
@@ -48,16 +48,16 @@ Rake::RDocTask.new do |rdoc|
     rdoc.rdoc_dir = 'doc/rdoc'
     rdoc.options += RDOC_OPTS
     rdoc.rdoc_files.include("CHANGES", "lib/**/*.rb")
-    #rdoc.main = "README"    
+    #rdoc.main = "README"
 end
 
 #desc "Publish rdoc output to rubyforge"
-#task "publish-docs" => ["rdoc"] do 
-#  rubyforge_path = "/var/www/gforge-projects/#{NAME}/" 
-#  sh "scp -r doc/* " + 
-#    "#{ENV["RUBYFORGE_USER"]}@rubyforge.org:#{rubyforge_path}", 
-#    :verbose => true 
-#end 
+#task "publish-docs" => ["rdoc"] do
+#  rubyforge_path = "/var/www/gforge-projects/#{NAME}/"
+#  sh "scp -r doc/* " +
+#    "#{ENV["RUBYFORGE_USER"]}@rubyforge.org:#{rubyforge_path}",
+#    :verbose => true
+#end
 
 Rake::TestTask.new do |test|
   test.test_files = FileList['tests/*/tc_*.rb']

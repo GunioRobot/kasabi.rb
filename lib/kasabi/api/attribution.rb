@@ -1,7 +1,7 @@
 module Kasabi
-  
+
   class Attribution < BaseClient
-    
+
     #Initialize the attribution client to work with a specific endpoint
     #
     # The _options_ hash can contain the following values:
@@ -10,12 +10,12 @@ module Kasabi
     def initialize(endpoint, options={})
       super(endpoint, options)
     end
-        
+
     def get_attribution()
       response = get(@endpoint)
       validate_response(response)
-      return JSON.parse( response.content )        
+      return JSON.parse( response.content )
     end
-        
+
   end
 end

@@ -1,10 +1,10 @@
 module Kasabi
-  
+
   class Dataset < Kasabi::BaseClient
-    
+
     attr_reader :short_code
     attr_reader :uri
-    
+
     #Initialize the client to work with a specific dataset endpoint
     #Dataset endpoints are available from api.kasabi.com/data/...
     #
@@ -18,7 +18,7 @@ module Kasabi
       case domain
         when "data"
           @uri = endpoint
-          @endpoint = endpoint.gsub("http://data", "http://api")  
+          @endpoint = endpoint.gsub("http://data", "http://api")
         when "api"
           @endpoint = endpoint
           @uri = endpoint.gsub("http://api", "http://data")
@@ -26,21 +26,21 @@ module Kasabi
           #probably website, e.g. beta.kasabi or www.kasabi
           @endpoint = "http://api.kasabi.com" + uri.path
           @uri = "http://data.kasabi.com" + uri.path
-      end      
+      end
     end
-    
+
     #Read the metadata about this dataset from the live service
     def metadata(allow_cached=true)
       if @metadata
         return @metadata
       end
-      response = get(@uri, nil, 
+      response = get(@uri, nil,
         {"Accept" => "application/json"})
       validate_response(response)
       @metadata = JSON.parse( response.content )
       return @metadata
     end
-    
+
     PROPERTIES = {
       :title => "http://purl.org/dc/terms/title",
       :description => "http://purl.org/dc/terms/description",
@@ -55,11 +55,11 @@ module Kasabi
       :jobs_api => "http://labs.kasabi.com/ns/services#jobsEndpoint",
       :attribution_api => "http://labs.kasabi.com/ns/services#attributionEndpoint"
     }
-          
+
     PROPERTIES.keys.each do |arg|
       send :define_method, arg do
         return property(PROPERTIES[arg])
-      end      
+      end
     end
 
     STANDARD_API_CLIENTS = {
@@ -71,20 +71,20 @@ module Kasabi
       :store_api => Kasabi::Storage::Client,
       :status_api => Kasabi::Status,
       :jobs_api => Kasabi::Jobs::Client,
-      :attribution_api => Kasabi::Attribution      
+      :attribution_api => Kasabi::Attribution
     }
 
     STANDARD_API_CLIENTS.keys.each do |arg|
       send :define_method, "#{arg}_client" do
         return STANDARD_API_CLIENTS[arg].method("new").call( self.method(arg).call(), self.client_options )
-      end      
+      end
     end
-                                      
+
     private
-    
+
       def property(predicate)
         metadata()
-        return @metadata[ @uri ][predicate][0]["value"]     
+        return @metadata[ @uri ][predicate][0]["value"]
       end
   end
 end

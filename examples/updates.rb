@@ -7,10 +7,10 @@ require 'uuid'
 dataset = ENV["KASABI_DATASET"]
 #developer API key
 apikey = ENV["KASABI_API_KEY"]
-  
+
 #base url of linked data service (no need to change, except for Kasabi developers)
 base = ENV["KASABI_BASE_URI"] || "http://api.kasabi.local"
-  
+
 #generate a unique uri
 marker = "http://example.org/tests/#{UUID.generate}"
 
@@ -23,7 +23,7 @@ dataset = Kasabi::Dataset.new("#{base}/dataset/#{dataset}", {:apikey => apikey})
 dataset.client.debug_dev = $stderr
 puts "Dataset: #{dataset.endpoint}"
 puts "API key: #{apikey}"
-puts "Submitting test data to Kasabi dataset:\n#{to_add}"  
+puts "Submitting test data to Kasabi dataset:\n#{to_add}"
 client = dataset.store_api_client()
 resp = client.store_data( to_add, "text/turtle")
 puts "Data submitted. Update URI: #{resp}"
@@ -35,16 +35,16 @@ end
 
 puts "Update applied"
 
-cs = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"" + 
-    " xmlns:cs=\"http://purl.org/vocab/changeset/schema#\"> " + 
-  " <cs:ChangeSet rdf:about=\"http://example.com/changesets#change\">" + 
+cs = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"" +
+    " xmlns:cs=\"http://purl.org/vocab/changeset/schema#\"> " +
+  " <cs:ChangeSet rdf:about=\"http://example.com/changesets#change\">" +
   " <cs:subjectOfChange rdf:resource=\"#{marker}\"/> " +
   " <cs:createdDate>2011-05-16T00:00:00Z</cs:createdDate> " +
   " <cs:creatorName>Anne Onymous</cs:creatorName> " +
   " <cs:changeReason>Removal</cs:changeReason> " +
   " <cs:removal> " +
   "  <rdf:Statement> " +
-  "      <rdf:subject rdf:resource=\"#{marker}\"/>" + 
+  "      <rdf:subject rdf:resource=\"#{marker}\"/>" +
   "   <rdf:predicate rdf:resource=\"http://www.w3.org/2000/01/rdf-schema#comment\"/> " +
   "      <rdf:object>Hello world</rdf:object> " +
   " </rdf:Statement> " +
@@ -63,4 +63,3 @@ while !client.applied?(resp)
 end
 
 puts "Changeset applied"
-    

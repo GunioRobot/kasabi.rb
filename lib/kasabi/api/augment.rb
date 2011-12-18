@@ -1,7 +1,7 @@
 module Kasabi
-  
+
   module Augment
-    
+
     #Client for working with Kasabi Augmentation APIs
     class Client < BaseClient
 
@@ -20,10 +20,10 @@ module Kasabi
       def augment_uri(uri)
         response = get(@endpoint, {"data-uri" => uri})
         validate_response(response)
-          
+
         return response.content
       end
-      
+
       # Augment data using POSTing it to the API
       #
       # Currently this is limited to RSS 1.0 feeds
@@ -34,7 +34,7 @@ module Kasabi
         validate_response(response)
         return response.content
       end
-      
+
     end
   end
 end

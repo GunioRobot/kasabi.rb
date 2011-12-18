@@ -1,87 +1,87 @@
 module Kasabi
 
   #Module providing a SPARQL client library, support for parsing SPARQL query responses into Ruby objects
-  #and other useful behaviour  
+  #and other useful behaviour
   module Sparql
 
     SPARQL_RESULTS_XML = "application/sparql-results+xml"
     SPARQL_RESULTS_JSON = "application/sparql-results+json"
-    
+
     #Includes all statements along both in-bound and out-bound arc paths
     #
-    #See http://n2.talis.com/wiki/Bounded_Descriptions_in_RDF   
+    #See http://n2.talis.com/wiki/Bounded_Descriptions_in_RDF
     SYMMETRIC_BOUNDED_DESCRIPTION = <<-EOL
     CONSTRUCT {?uri ?p ?o . ?s ?p2 ?uri .} WHERE { {?uri ?p ?o .} UNION {?s ?p2 ?uri .} }
     EOL
-    
+
     #Similar to Concise Bounded Description but includes labels for referenced resources
     #
-    #See http://n2.talis.com/wiki/Bounded_Descriptions_in_RDF    
+    #See http://n2.talis.com/wiki/Bounded_Descriptions_in_RDF
     LABELLED_BOUNDED_DESCRIPTION = <<-EOL
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     CONSTRUCT {
-       ?uri ?p ?o . 
-       ?o rdfs:label ?label . 
-       ?o rdfs:comment ?comment . 
-       ?o <http://www.w3.org/2004/02/skos/core#prefLabel> ?plabel . 
+       ?uri ?p ?o .
+       ?o rdfs:label ?label .
+       ?o rdfs:comment ?comment .
+       ?o <http://www.w3.org/2004/02/skos/core#prefLabel> ?plabel .
        ?o rdfs:seeAlso ?seealso.
     } WHERE {
-      ?uri ?p ?o . 
-      OPTIONAL { 
+      ?uri ?p ?o .
+      OPTIONAL {
         ?o rdfs:label ?label .
-      } 
+      }
       OPTIONAL {
-        ?o <http://www.w3.org/2004/02/skos/core#prefLabel> ?plabel . 
-      } 
+        ?o <http://www.w3.org/2004/02/skos/core#prefLabel> ?plabel .
+      }
       OPTIONAL {
-        ?o rdfs:comment ?comment . 
-      } 
-      OPTIONAL { 
+        ?o rdfs:comment ?comment .
+      }
+      OPTIONAL {
         ?o rdfs:seeAlso ?seealso.
       }
-    }    
+    }
     EOL
 
     #Derived from both the Symmetric and Labelled Bounded Descriptions. Includes all in-bound
     #and out-bound arc paths, with labels for any referenced resources.
     #
-    #See http://n2.talis.com/wiki/Bounded_Descriptions_in_RDF    
+    #See http://n2.talis.com/wiki/Bounded_Descriptions_in_RDF
     SYMMETRIC_LABELLED_BOUNDED_DESCRIPTION = <<-EOL
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     CONSTRUCT {
-      ?uri ?p ?o . 
-      ?o rdfs:label ?label . 
-      ?o rdfs:comment ?comment . 
-      ?o rdfs:seeAlso ?seealso. 
-      ?s ?p2 ?uri . 
-      ?s rdfs:label ?label . 
-      ?s rdfs:comment ?comment . 
+      ?uri ?p ?o .
+      ?o rdfs:label ?label .
+      ?o rdfs:comment ?comment .
+      ?o rdfs:seeAlso ?seealso.
+      ?s ?p2 ?uri .
+      ?s rdfs:label ?label .
+      ?s rdfs:comment ?comment .
       ?s rdfs:seeAlso ?seealso.
-    } WHERE { 
-      { ?uri ?p ?o . 
-        OPTIONAL { 
+    } WHERE {
+      { ?uri ?p ?o .
+        OPTIONAL {
           ?o rdfs:label ?label .
-        } 
+        }
         OPTIONAL {
           ?o rdfs:comment ?comment .
-        } 
+        }
         OPTIONAL {
           ?o rdfs:seeAlso ?seealso.
-        } 
-      } 
+        }
+      }
       UNION {
-        ?s ?p2 ?uri . 
+        ?s ?p2 ?uri .
         OPTIONAL {
           ?s rdfs:label ?label .
-        } 
+        }
         OPTIONAL {
           ?s rdfs:comment ?comment .
-        } 
+        }
         OPTIONAL {
           ?s rdfs:seeAlso ?seealso.
-        } 
-      } 
-    }    
+        }
+      }
+    }
     EOL
 
     DESCRIPTIONS = {
@@ -89,21 +89,21 @@ module Kasabi
       :scbd => SYMMETRIC_BOUNDED_DESCRIPTION,
       :lcbd => LABELLED_BOUNDED_DESCRIPTION,
       :slcbd => SYMMETRIC_LABELLED_BOUNDED_DESCRIPTION
-    }      
-    
+    }
+
     #A simple SPARQL client that handles the basic HTTP traffic
     class Client < BaseClient
-      
+
         #Initialize a client for a specific endpoint
         #
         #endpoint:: uri of the SPARQL endpoint
         #options:: hash containing additional configuration options, including +:apikey+ for specifying api key
         def initialize(endpoint, options={} )
          super(endpoint, options)
-        end 
+        end
 
         VARIABLE_MATCHER = /(\?|\$)([a-zA-Z]+)/
-      
+
         #Apply some initial bindings to parameters in a query
         #
         #The keys in the values hash are used to replace variables in a query
@@ -123,20 +123,20 @@ module Kasabi
                 bindings[key].to_s
               else
                 pattern
-              end              
-            end            
-            return copy  
+              end
+            end
+            return copy
         end
 
         #Convert a SPARQL query result binding into a hash suitable for passing
         #to the apply_initial_bindings method.
         #
-        #The result param is assumed to be a Ruby hash that reflects the structure of 
-        #a binding in a SELECT query result (i.e. the result of parsing the <tt>application/sparql-results+json</tt> 
+        #The result param is assumed to be a Ruby hash that reflects the structure of
+        #a binding in a SELECT query result (i.e. the result of parsing the <tt>application/sparql-results+json</tt>
         #format and extracting an specific result binding.
         #
-        #The method is intended to be used to support cases where an initial select query is 
-        #performed to extract some variables that can later be plugged into a subsequent 
+        #The method is intended to be used to support cases where an initial select query is
+        #performed to extract some variables that can later be plugged into a subsequent
         #query
         #
         #result:: hash conforming to structure of a <tt>binding</tt> in the SPARQL JSON format
@@ -148,13 +148,13 @@ module Kasabi
             elsif (value["type"] == "literal" && !value.has_key?("datatype"))
               hash[key] = "\"#{value["value"]}\""
             elsif (value["type"] == "literal" && value.has_key?("datatype"))
-              hash[key] = "\"#{value["value"]}\"^^#{value["datatype"]}"             
+              hash[key] = "\"#{value["value"]}\"^^#{value["datatype"]}"
             else
               #do nothing for bnodes
             end
           end
           return hash
-        end        
+        end
         #Convert Ruby hash structured according to SPARQL JSON format
         #into an array of hashes by calling result_to_query_binding on each binding
         #into the results.
@@ -163,33 +163,33 @@ module Kasabi
         #<tt>results = Sparql::SparqlHelper.select(query, sparql_client)</tt>
         #<tt>bindings = Sparql::SparqlHelper.results_to_query_bindings(results)</tt>
         #
-        #results:: hash conforming to SPARQL SELECT structure        
+        #results:: hash conforming to SPARQL SELECT structure
         def Client.results_to_query_bindings(results)
           bindings = []
-          
+
           results["results"]["bindings"].each do |result|
             bindings << result_to_query_binding(result)
           end
           return bindings
-        end              
-                                
+        end
+
         #Perform a sparql query.
         #
         #sparql:: a valid SPARQL query
         #format:: specific a request format. Usually a media-type, but may be a name for a type, if not using Conneg
         #graphs:: an array of default graphs
         #named_graphs:: an array of named graphs
-        def query(sparql, format=nil)          
+        def query(sparql, format=nil)
           headers = {}
-          if format != nil            
-            headers["Accept"] = format  
+          if format != nil
+            headers["Accept"] = format
           end
-          
+
           response = get( @endpoint, {"query" => sparql}, headers )
           validate_response(response)
           return response.content
         end
-        
+
         #Describe a uri, optionally specifying a form of bounded description
         #
         #uri:: the uri to describe
@@ -203,7 +203,7 @@ module Kasabi
           query = Client.apply_initial_bindings(template, {"uri" => "<#{uri}>"} )
           return describe(query)
         end
-        
+
         #Perform a SPARQL DESCRIBE query.
         #
         #query:: the SPARQL query
@@ -212,7 +212,7 @@ module Kasabi
           response = query(query, "application/json")
           graph = RDF::Graph.new()
           graph.insert( RDF::JSON::Reader.new( StringIO.new( response ) ) )
-          return graph                  
+          return graph
         end
 
         #DESCRIBE multiple resources in a single query. The provided array should contain
@@ -228,24 +228,24 @@ module Kasabi
           response = query(query, "application/json")
           graph = RDF::Graph.new()
           graph.insert( RDF::JSON::Reader.new( StringIO.new( response ) ) )
-          return graph                  
+          return graph
         end
-              
+
         #Perform a SPARQL CONSTRUCT query.
         #
         #query:: the SPARQL query
-        #format:: the preferred response format        
+        #format:: the preferred response format
         def construct(query)
           response = query(query, "application/json")
           graph = RDF::Graph.new()
           graph.insert( RDF::JSON::Reader.new( StringIO.new( response ) ) )
-          return graph                  
+          return graph
         end
-        
+
         #Perform a SPARQL ASK query.
         #
         #query:: the SPARQL query
-        #format:: the preferred response format    
+        #format:: the preferred response format
         def ask(query)
           json = JSON.parse( query(query, Sparql::SPARQL_RESULTS_JSON) )
           return json["boolean"] == "true"
@@ -257,24 +257,24 @@ module Kasabi
         #uri:: the uri to test for
         #sparql_client:: a configured Sparql Client object
         def exists?(uri)
-           return ask("ASK { <#{uri}> ?p ?o }")  
+           return ask("ASK { <#{uri}> ?p ?o }")
         end
-                
+
         #Perform a SPARQL SELECT query.
         #
         #query:: the SPARQL query
-        #format:: the preferred response format    
+        #format:: the preferred response format
         def select(query)
           return JSON.parse( query(query, Sparql::SPARQL_RESULTS_JSON) )
         end
-        
+
         #Perform a simple SELECT query on an endpoint and return a simple array of values
         #
         #Will request the results using the SPARQL JSON results format, and parse the
-        #resulting JSON results. The assumption is that the SELECT query contains a single "column" 
-        #of values, which will be returned as an array 
+        #resulting JSON results. The assumption is that the SELECT query contains a single "column"
+        #of values, which will be returned as an array
         #
-        #Note this will lose any type information, only the value of the bindings are returned 
+        #Note this will lose any type information, only the value of the bindings are returned
         #
         #Also note that if row has an empty binding for the selected variable, then this row will
         #be dropped from the resulting array
@@ -288,16 +288,16 @@ module Kasabi
            results["results"]["bindings"].each do |binding|
              values << binding[v]["value"] if binding[v]
            end
-           return values           
+           return values
         end
-        
+
         #Perform a simple SELECT query and return the results as a simple array of hashes.
-        #Each entry in the array will be a row in the results, and each hash will have a key for 
+        #Each entry in the array will be a row in the results, and each hash will have a key for
         #each variable.
         #
         #Note that this will lose any type information, only the value of the bindings are returned
         #
-        #Also note that if a row has an empty binding for a given variable, then this variable will 
+        #Also note that if a row has an empty binding for a given variable, then this variable will
         #not be presented in the hash for that row.
         #
         #query:: the SPARQL SELECT query
@@ -314,7 +314,7 @@ module Kasabi
           end
           return rows
         end
-        
+
         #Perform a simple SELECT query on an endpoint and return a single result
         #
         #Will request the results using the SPARQL JSON results format, and parse the
@@ -322,17 +322,17 @@ module Kasabi
         #value (i.e single variable, with single binding)
         #
         #Note this will lose any type information, only the value of the binding is returned
-        #If additional results are returned, then these are ignored 
+        #If additional results are returned, then these are ignored
         #
         #query:: the SPARQL SELECT query
-        #sparql_client:: a configured Sparql Client object                
+        #sparql_client:: a configured Sparql Client object
         def select_single_value(query)
           results = select(query)
           v = results["head"]["vars"][0];
-          return results["results"]["bindings"][0][v]["value"]           
-        end        
-    end   
-  
+          return results["results"]["bindings"][0][v]["value"]
+        end
+    end
+
   end
-  
+
 end
